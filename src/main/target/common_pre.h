@@ -143,14 +143,17 @@
 #define USE_TASK_STATISTICS
 #define USE_GYRO_REGISTER_DUMP  // Adds gyroregisters command to cli to dump configured register values
 #define USE_IMU_CALC
-//#define USE_PPM
+#define USE_PPM
 #define USE_SERIAL_RX
-//#define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
-//#define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
-//#define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
+#define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
+#define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
+#define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
 #define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
-#define USE_SERIALRX_SRXLv2
-//#define USE_SERIALRX_SUMD       // Graupner Hott protocol
+#define USE_SERIALRX_SUMD       // Graupner Hott protocol
+
+#ifndef STM32F3 //Not enough space for F3 support
+#define USE_SERIALRX_SRXLv2     // Spektrum SRXL2 protocol
+#endif // STM32F3
 
 #if (FLASH_SIZE > 128)
 #define PID_PROFILE_COUNT 3
