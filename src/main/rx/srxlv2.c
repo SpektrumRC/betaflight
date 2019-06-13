@@ -74,10 +74,10 @@ static uint8_t write_buffer_idx = 0;
 static serialPort_t *serialPort;
 
 
-static IO_t exti_io;
-static extiCallbackRec_t rec;
+//static IO_t exti_io;
+//static extiCallbackRec_t rec;
 
-static uint32_t min_duration = UINT32_MAX;
+//static uint32_t min_duration = UINT32_MAX;
 
 static uint8_t bus_master_device_id = 0xFF;
 static bool telemetry_requested = false;
@@ -546,7 +546,7 @@ void srxlv2RxWriteData(const void *data, int len)
     write_buffer_idx = len;
 }
 
-
+/*
 static uint32_t last_exti = 0;
 static uint8_t edges_counter = 0;
 void srxlv2Exti(extiCallbackRec_t *self)
@@ -580,6 +580,7 @@ void srxlv2Exti(extiCallbackRec_t *self)
         last_exti = now;
     }
 }
+*/
 
 bool srxlv2RxInit(const rxConfig_t *rxConfig, rxRuntimeConfig_t *rxRuntimeConfig)
 {
@@ -615,8 +616,8 @@ bool srxlv2RxInit(const rxConfig_t *rxConfig, rxRuntimeConfig_t *rxRuntimeConfig
         options |= SERIAL_SWAP_RX_TX;
     }
 
-    exti_io = IOGetByTag(IO_TAG(PB10));
-    EXTIHandlerInit(&rec, srxlv2Exti);
+    //exti_io = IOGetByTag(IO_TAG(PB10));
+    //EXTIHandlerInit(&rec, srxlv2Exti);
 
     serialPort = openSerialPort(portConfig->identifier, FUNCTION_RX_SERIAL, srxlv2DataReceive,
         NULL, SRXLv2_PORT_BAUDRATE_DEFAULT, SRXLv2_PORT_MODE, options);
