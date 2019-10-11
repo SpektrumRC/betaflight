@@ -171,9 +171,6 @@ void srxl2ProcessChannelData(const Srxl2ChannelDataHeader* channelData, rxRuntim
     if (channelData->rssi >= 0) {
         const int rssiPercent = channelData->rssi;
         setRssi(scaleRange(rssiPercent, 0, 100, 0, RSSI_MAX_VALUE), RSSI_SOURCE_RX_PROTOCOL);
-    } else {
-        // If dBm value provided, cant properly convert to % without knowing the receivers sensitivity range. Fix at 50% for now.
-        setRssi(RSSI_MAX_VALUE / 2, RSSI_SOURCE_RX_PROTOCOL);
     }
 
     if (channelData->rssi == 0) {
