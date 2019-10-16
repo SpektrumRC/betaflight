@@ -109,6 +109,7 @@ static serialPort_t *serialPort;
 
 static uint8_t busMasterDeviceId = 0xFF;
 static bool telemetryRequested = false;
+static int8_t lastRssi = 0;
 
 static uint8_t telemetryFrame[22];
 
@@ -168,16 +169,18 @@ bool srxl2ProcessHandshake(const Srxl2Header* header)
 }
 
 void srxl2ProcessChannelData(const Srxl2ChannelDataHeader* channelData, rxRuntimeConfig_t *rxRuntimeConfig) {
+    globalResult = RX_FRAME_COMPLETE;
+
     if (channelData->rssi >= 0) {
         const int rssiPercent = channelData->rssi;
         setRssi(scaleRange(rssiPercent, 0, 100, 0, RSSI_MAX_VALUE), RSSI_SOURCE_RX_PROTOCOL);
     }
 
-    if (channelData->rssi == 0) {
-        globalResult = RX_FRAME_FAILSAFE;
-    } else {
-        globalResult = RX_FRAME_COMPLETE;
+    if (channelData->rssi == 0 || (channelData->rssi < 0 && lastRssi == 0)) {
+        globalResult |= RX_FRAME_FAILSAFE;
     }
+
+    lastRssi = channelData->rssi;
 
     const uint16_t *frameChannels = (const uint16_t *) (channelData + 1);
     uint32_t channelMask = channelData->channelMask.u32;
@@ -207,6 +210,7 @@ bool srxl2ProcessControlData(const Srxl2Header* header, rxRuntimeConfig_t *rxRun
 
     case FailsafeChannelData: {
         srxl2ProcessChannelData((const Srxl2ChannelDataHeader *) (controlData + 1), rxRuntimeConfig);
+        globalResult |= RX_FRAME_FAILSAFE;
         setRssiDirect(0, RSSI_SOURCE_RX_PROTOCOL);
         // DEBUG_PRINTF("fs channel data\r\n");
     } break;
